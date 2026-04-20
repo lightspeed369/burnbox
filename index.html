@@ -45,18 +45,9 @@
     z-index: 0;
   }
 
-  .container {
-    width: 100%;
-    max-width: 680px;
-    position: relative;
-    z-index: 1;
-  }
+  .container { width: 100%; max-width: 680px; position: relative; z-index: 1; }
 
-  .header {
-    text-align: center;
-    margin-bottom: 48px;
-    animation: fadeDown 0.6s ease both;
-  }
+  .header { text-align: center; margin-bottom: 48px; animation: fadeDown 0.6s ease both; }
 
   .logo {
     font-family: 'Syne', sans-serif;
@@ -70,21 +61,36 @@
     line-height: 1;
   }
 
-  .tagline {
-    color: var(--muted);
-    font-size: 0.75rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 10px;
+  .tagline { color: var(--muted); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
   }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    margin-bottom: 16px;
-    animation: fadeUp 0.5s ease both;
+  .tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
   }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; margin-bottom: 16px; animation: fadeUp 0.5s ease both; }
 
   .card-header {
     padding: 20px 24px 16px;
@@ -96,28 +102,12 @@
     flex-wrap: wrap;
   }
 
-  .label {
-    font-size: 0.65rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
+  .label { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 
-  .email-address {
-    font-family: 'Space Mono', monospace;
-    font-size: clamp(0.8rem, 2.5vw, 1rem);
-    color: var(--text);
-    word-break: break-all;
-  }
-
+  .email-address { font-family: 'Space Mono', monospace; font-size: clamp(0.8rem, 2.5vw, 1rem); color: var(--text); word-break: break-all; }
   .email-address.active { color: var(--green); }
 
-  .actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-  }
+  .actions { display: flex; gap: 8px; flex-shrink: 0; }
 
   .btn {
     font-family: 'Space Mono', monospace;
@@ -136,25 +126,9 @@
 
   .btn:hover { border-color: var(--accent); color: var(--accent); }
   .btn:active { transform: scale(0.97); }
-
-  .btn-primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    font-weight: 700;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent2);
-    border-color: var(--accent2);
-    color: #fff;
-  }
-
-  .btn:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
   .status-bar {
     padding: 10px 24px;
@@ -166,29 +140,12 @@
     color: var(--muted);
   }
 
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--muted);
-    flex-shrink: 0;
-  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
 
-  .dot.live {
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s infinite;
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .inbox-body {
-    padding: 0;
-    min-height: 180px;
-  }
+  .inbox-body { padding: 0; min-height: 180px; }
 
   .inbox-empty {
     display: flex;
@@ -203,10 +160,7 @@
     line-height: 1.8;
   }
 
-  .inbox-empty-icon {
-    font-size: 2rem;
-    opacity: 0.3;
-  }
+  .inbox-empty-icon { font-size: 2rem; opacity: 0.3; }
 
   .message-item {
     padding: 16px 24px;
@@ -224,239 +178,106 @@
   .message-item.unread .msg-subject { color: var(--text); }
   .message-item:not(.unread) .msg-subject { color: var(--muted); }
 
-  .msg-from {
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    grid-column: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .msg-from { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; grid-column: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msg-subject { font-size: 0.85rem; grid-column: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msg-time { font-size: 0.65rem; color: var(--muted); grid-column: 2; grid-row: 1 / 3; align-self: center; white-space: nowrap; }
+  .unread-badge { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: middle; }
 
-  .msg-subject {
-    font-size: 0.85rem;
-    grid-column: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.15s ease; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; width: 100%; max-width: 620px; max-height: 80vh; display: flex; flex-direction: column; animation: fadeUp 0.2s ease; }
+  .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .modal-subject { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; }
+  .modal-meta { font-size: 0.7rem; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+  .modal-close { background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 2px; transition: all 0.12s; }
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-body { overflow-y: auto; flex: 1; }
+  .modal-body.text-mode { padding: 24px; font-size: 0.82rem; line-height: 1.8; color: #ccc; white-space: pre-wrap; word-break: break-word; }
+  .modal-body iframe { display: block; width: 100%; height: 420px; border: none; background: #fff; }
 
-  .msg-time {
-    font-size: 0.65rem;
-    color: var(--muted);
-    grid-column: 2;
-    grid-row: 1 / 3;
-    align-self: center;
-    white-space: nowrap;
-  }
+  /* Timer */
+  .timer-bar { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .timer-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+  .timer-track { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .timer-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 1s linear; }
+  .timer-value { font-size: 0.7rem; color: var(--accent); min-width: 48px; text-align: right; }
 
-  .unread-badge {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-right: 6px;
-    vertical-align: middle;
-  }
+  /* Gmail alias tab */
+  .alias-section { padding: 20px 24px; border-bottom: 1px solid var(--border); }
 
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 100;
+  .input-row {
     display: flex;
+    gap: 8px;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    animation: fadeIn 0.15s ease;
+    flex-wrap: wrap;
   }
 
-  .modal {
-    background: var(--surface);
+  .text-input {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--surface2);
     border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
     border-radius: 2px;
-    width: 100%;
-    max-width: 620px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    animation: fadeUp 0.2s ease;
+    outline: none;
+    flex: 1;
+    min-width: 140px;
+    transition: border-color 0.15s;
   }
 
-  .modal-header {
-    padding: 20px 24px;
+  .text-input::placeholder { color: var(--muted); }
+  .text-input:focus { border-color: var(--accent); }
+
+  .alias-list { padding: 0; }
+
+  .alias-item {
+    padding: 13px 24px;
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-  }
-
-  .modal-subject {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-  }
-
-  .modal-meta {
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.6;
-  }
-
-  .modal-close {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1rem;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 2px;
-    transition: all 0.12s;
-  }
-
-  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
-
-  .modal-body {
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .modal-body.text-mode {
-    padding: 24px;
-    font-size: 0.82rem;
-    line-height: 1.8;
-    color: #ccc;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  .modal-body iframe {
-    display: block;
-    width: 100%;
-    height: 420px;
-    border: none;
-    background: #fff;
-  }
-
-  /* 24hr expiry bar */
-  .timer-bar {
-    padding: 14px 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
     gap: 12px;
   }
 
-  .timer-label {
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
+  .alias-item:last-child { border-bottom: none; }
 
-  .timer-track {
+  .alias-addr {
+    font-size: 0.78rem;
+    color: var(--green);
+    word-break: break-all;
     flex: 1;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
   }
 
-  .timer-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    transition: width 60s linear;
-  }
-
-  .timer-value {
-    font-size: 0.7rem;
-    color: var(--accent);
-    min-width: 56px;
-    text-align: right;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    color: var(--text);
-    padding: 10px 20px;
-    font-size: 0.72rem;
+  .alias-meta {
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 3px;
     letter-spacing: 1px;
-    border-radius: 2px;
-    z-index: 200;
-    transition: transform 0.25s ease;
-    white-space: nowrap;
   }
 
+  .alias-note {
+    padding: 12px 24px;
+    font-size: 0.65rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--accent); color: var(--text); padding: 10px 20px; font-size: 0.72rem; letter-spacing: 1px; border-radius: 2px; z-index: 200; transition: transform 0.25s ease; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
 
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .footer {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 1px;
-    line-height: 2;
-  }
-
-  .badge {
-    display: inline-block;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 2px;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-left: 6px;
-    vertical-align: middle;
-  }
-
-  .count-badge {
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.6rem;
-    padding: 1px 6px;
-    border-radius: 10px;
-    margin-left: 6px;
-    vertical-align: middle;
-    font-weight: 700;
-  }
+  .footer { text-align: center; margin-top: 32px; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; line-height: 2; }
+  .badge { display: inline-block; background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 2px; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-left: 6px; vertical-align: middle; }
+  .count-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 0.6rem; padding: 1px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -468,43 +289,81 @@
   </div>
 
   <div class="card" id="main-card">
-    <div class="card-header">
-      <div>
-        <div class="label">Your Address</div>
-        <div class="email-address" id="email-display">—</div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('disposable')">Disposable Inbox</button>
+      <button class="tab" onclick="switchTab('gmail')">Gmail Alias</button>
+    </div>
+
+    <!-- Tab 1: Disposable Inbox -->
+    <div class="tab-panel active" id="tab-disposable">
+      <div class="card-header">
+        <div>
+          <div class="label">Your Address</div>
+          <div class="email-address" id="email-display">—</div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="copy-btn" disabled onclick="copyEmail()">Copy</button>
+          <button class="btn btn-primary" id="gen-btn" onclick="generateEmail()">Generate</button>
+        </div>
       </div>
-      <div class="actions">
-        <button class="btn" id="copy-btn" disabled onclick="copyEmail()">Copy</button>
-        <button class="btn btn-primary" id="gen-btn" onclick="generateEmail()">
-          Generate
-        </button>
+
+      <div class="status-bar">
+        <div class="dot" id="status-dot"></div>
+        <span id="status-text">Press Generate to create a disposable inbox</span>
+        <span id="msg-count"></span>
+      </div>
+
+      <div class="inbox-body" id="inbox">
+        <div class="inbox-empty">
+          <div class="inbox-empty-icon">📭</div>
+          <div>No inbox yet.<br>Generate an address to start receiving mail.</div>
+        </div>
+      </div>
+
+      <div class="timer-bar" id="timer-bar" style="display:none;">
+        <span class="timer-label">Expires</span>
+        <div class="timer-track">
+          <div class="timer-fill" id="timer-fill" style="width:100%"></div>
+        </div>
+        <span class="timer-value" id="timer-val">60:00</span>
       </div>
     </div>
 
-    <div class="status-bar">
-      <div class="dot" id="status-dot"></div>
-      <span id="status-text">Press Generate to create a disposable inbox</span>
-      <span id="msg-count"></span>
-    </div>
+    <!-- Tab 2: Gmail Alias -->
+    <div class="tab-panel" id="tab-gmail">
+      <div class="alias-section">
+        <div class="label" style="margin-bottom:10px;">Your Gmail</div>
+        <div class="input-row">
+          <input class="text-input" id="gmail-base" type="email" placeholder="you@gmail.com" oninput="saveGmailBase()">
+        </div>
+      </div>
 
-    <div class="inbox-body" id="inbox">
-      <div class="inbox-empty">
-        <div class="inbox-empty-icon">📭</div>
-        <div>No inbox yet.<br>Generate an address to start receiving mail.</div>
+      <div class="alias-section" style="border-bottom:none;">
+        <div class="label" style="margin-bottom:10px;">Label (optional)</div>
+        <div class="input-row">
+          <input class="text-input" id="alias-label" type="text" placeholder="chatgpt, netflix, amazon...">
+          <button class="btn btn-primary" onclick="generateAlias()">Generate</button>
+        </div>
+      </div>
+
+      <div class="alias-list" id="alias-list">
+        <div class="inbox-empty" style="min-height:120px;">
+          <div class="inbox-empty-icon" style="font-size:1.4rem;">✉️</div>
+          <div>Generated aliases appear here.<br>All land in your Gmail inbox.</div>
+        </div>
+      </div>
+
+      <div class="alias-note">
+        ⚠ Some major platforms (OpenAI, Google) block the + trick. For those, use the Disposable Inbox tab or a custom domain.
       </div>
     </div>
 
-    <div class="timer-bar" id="timer-bar" style="display:none;">
-      <span class="timer-label">Expires</span>
-      <div class="timer-track">
-        <div class="timer-fill" id="timer-fill" style="width:100%"></div>
-      </div>
-      <span class="timer-value" id="timer-val">24:00</span>
-    </div>
   </div>
 
-  <div class="footer">
-    Powered by Maildrop &nbsp;·&nbsp; Inboxes last 24 hours &nbsp;·&nbsp; Use for signups &amp; verifications only
+  <div class="footer" id="footer-text">
+    Powered by Guerrilla Mail &nbsp;·&nbsp; Inboxes last 60 min &nbsp;·&nbsp; Auto-extends while tab is open
     <br><span class="badge">No PII Stored</span><span class="badge">Ephemeral</span>
   </div>
 </div>
@@ -526,58 +385,128 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const MAILDROP_API = 'https://api.maildrop.cc/graphql';
-  const TTL = 24 * 60 * 60 * 1000;
+  // ── Tabs ──────────────────────────────────────────────
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['disposable','gmail'][i] === name));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('footer-text').innerHTML = name === 'gmail'
+      ? 'Gmail + alias generator &nbsp;·&nbsp; Aliases land in your real inbox<br><span class="badge">Client Side Only</span><span class="badge">No Storage</span>'
+      : 'Powered by Guerrilla Mail &nbsp;·&nbsp; Inboxes last 60 min &nbsp;·&nbsp; Auto-extends while tab is open<br><span class="badge">No PII Stored</span><span class="badge">Ephemeral</span>';
+  }
+
+  // ── Gmail Alias ───────────────────────────────────────
+  const GMAIL_BASE_KEY = 'burnbox_gmail_base';
+  const ALIAS_HISTORY_KEY = 'burnbox_aliases';
+
+  function saveGmailBase() {
+    const val = document.getElementById('gmail-base').value.trim();
+    if (val) localStorage.setItem(GMAIL_BASE_KEY, val);
+  }
+
+  function generateAlias() {
+    const base = document.getElementById('gmail-base').value.trim();
+    if (!base || !base.includes('@')) { showToast('Enter your Gmail first'); return; }
+
+    const [user, domain] = base.split('@');
+    const label = document.getElementById('alias-label').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const suffix = rand(6);
+    const tag = label ? `${label}-${suffix}` : suffix;
+    const alias = `${user}+${tag}@${domain}`;
+
+    const history = getAliasHistory();
+    history.unshift({ alias, label: label || null, created: Date.now() });
+    if (history.length > 20) history.pop();
+    localStorage.setItem(ALIAS_HISTORY_KEY, JSON.stringify(history));
+
+    renderAliases();
+    document.getElementById('alias-label').value = '';
+    navigator.clipboard.writeText(alias).then(() => showToast('Copied · ' + alias));
+  }
+
+  function getAliasHistory() {
+    try { return JSON.parse(localStorage.getItem(ALIAS_HISTORY_KEY)) || []; } catch { return []; }
+  }
+
+  function renderAliases() {
+    const list = document.getElementById('alias-list');
+    const history = getAliasHistory();
+    if (!history.length) return;
+
+    list.innerHTML = history.map((item, i) => `
+      <div class="alias-item">
+        <div>
+          <div class="alias-addr">${escHtml(item.alias)}</div>
+          <div class="alias-meta">${item.label ? item.label.toUpperCase() + ' · ' : ''}${timeAgo(item.created)}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button class="btn" onclick="copyAlias('${escHtml(item.alias)}')">Copy</button>
+          <button class="btn" onclick="deleteAlias(${i})" style="color:#444;border-color:#333;">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function copyAlias(alias) {
+    navigator.clipboard.writeText(alias).then(() => showToast('Copied · ' + alias));
+  }
+
+  function deleteAlias(index) {
+    const history = getAliasHistory();
+    history.splice(index, 1);
+    localStorage.setItem(ALIAS_HISTORY_KEY, JSON.stringify(history));
+    renderAliases();
+    if (!getAliasHistory().length) {
+      document.getElementById('alias-list').innerHTML = `
+        <div class="inbox-empty" style="min-height:120px;">
+          <div class="inbox-empty-icon" style="font-size:1.4rem;">✉️</div>
+          <div>Generated aliases appear here.<br>All land in your Gmail inbox.</div>
+        </div>`;
+    }
+  }
+
+  // ── Disposable Inbox (Guerrilla Mail) ─────────────────
+  const API = 'https://api.guerrillamail.com/ajax.php';
+  const TTL = 60 * 60 * 1000;
+  const EXTEND_AT = 5 * 60 * 1000;
   const SESSION_KEY = 'burnbox_session';
 
-  let currentEmail = null;
-  let mailbox = null;
-  let pollInterval = null;
-  let timerInterval = null;
+  let sidToken = null, currentEmail = null, expiresAt = null;
+  let pollInterval = null, timerInterval = null;
   let seenIds = new Set();
-  let createdAt = null;
 
   function rand(n) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     return Array.from({length: n}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   }
 
-  async function gql(query) {
-    const res = await fetch(MAILDROP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query })
-    });
+  async function apiGet(params) {
+    const res = await fetch(`${API}?${new URLSearchParams(params)}`);
     if (!res.ok) throw new Error(`API error ${res.status}`);
     return res.json();
   }
 
-  function saveSession(address, ts) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ address, createdAt: ts }));
+  function saveSession() {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ address: currentEmail, sidToken, expiresAt }));
   }
 
   function loadSession() {
     try {
       const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-      if (s && s.address && Date.now() - s.createdAt < TTL) return s;
+      if (s && s.sidToken && s.expiresAt > Date.now()) return s;
     } catch {}
     return null;
   }
 
-  function activateInbox(address, ts) {
-    currentEmail = address;
-    mailbox = address.split('@')[0];
-    createdAt = ts;
-
+  function activateInbox(address, token, expires) {
+    currentEmail = address; sidToken = token; expiresAt = expires;
     const display = document.getElementById('email-display');
     display.textContent = address;
     display.classList.add('active');
     document.getElementById('copy-btn').disabled = false;
     document.getElementById('gen-btn').innerHTML = 'New Address';
-
     document.getElementById('status-dot').classList.add('live');
     document.getElementById('status-text').textContent = 'Inbox live · Checking every 8s';
-
     renderInbox([]);
     startPoll();
     startTimer();
@@ -587,103 +516,98 @@
     const btn = document.getElementById('gen-btn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Creating...';
+    clearPoll(); clearTimer(); seenIds = new Set();
 
-    clearPoll();
-    clearTimer();
-    seenIds = new Set();
-
-    const user = rand(10);
-    const address = `${user}@maildrop.cc`;
-    const ts = Date.now();
-
-    saveSession(address, ts);
-    activateInbox(address, ts);
-
-    btn.disabled = false;
+    try {
+      const data = await apiGet({ f: 'get_email_address', lang: 'en' });
+      sidToken = data.sid_token;
+      const user = rand(10);
+      const setData = await apiGet({ f: 'set_email_user', email_user: user, lang: 'en', sid_token: sidToken });
+      if (setData.sid_token) sidToken = setData.sid_token;
+      const address = setData.email_addr || data.email_addr;
+      const expires = Date.now() + TTL;
+      activateInbox(address, sidToken, expires);
+      saveSession();
+    } catch (e) {
+      showToast('Error: ' + e.message);
+      document.getElementById('status-text').textContent = 'Failed — try again';
+    } finally {
+      btn.disabled = false;
+      if (!currentEmail) btn.innerHTML = 'Generate';
+    }
   }
 
   async function pollMessages() {
-    if (!mailbox) return;
+    if (!sidToken) return;
     try {
-      const data = await gql(`query { inbox(mailbox: "${mailbox}") { id subject mailfrom date } }`);
-      const msgs = data.data?.inbox || [];
-
+      const data = await apiGet({ f: 'check_email', seq: 0, sid_token: sidToken });
+      if (data.sid_token) sidToken = data.sid_token;
+      const msgs = data.list || [];
       let newCount = 0;
-      msgs.forEach(m => { if (!seenIds.has(m.id)) newCount++; });
-
+      msgs.forEach(m => { if (!seenIds.has(m.mail_id)) newCount++; seenIds.add(m.mail_id); });
       renderInbox(msgs);
-      if (newCount > 0) {
-        showToast(`${newCount} new message${newCount > 1 ? 's' : ''}`);
-        msgs.forEach(m => seenIds.add(m.id));
-      } else {
-        msgs.forEach(m => seenIds.add(m.id));
-      }
+      if (newCount > 0) showToast(`${newCount} new message${newCount > 1 ? 's' : ''}`);
     } catch {}
   }
 
   function renderInbox(msgs) {
     const inbox = document.getElementById('inbox');
     const countEl = document.getElementById('msg-count');
-
     if (!msgs.length) {
       countEl.innerHTML = '';
-      inbox.innerHTML = `
-        <div class="inbox-empty">
-          <div class="inbox-empty-icon">📭</div>
-          <div>Inbox empty.<br>Emails appear here automatically.</div>
-        </div>`;
+      inbox.innerHTML = `<div class="inbox-empty"><div class="inbox-empty-icon">📭</div><div>Inbox empty.<br>Emails appear here automatically.</div></div>`;
       return;
     }
-
-    const unread = msgs.filter(m => !seenIds.has(m.id) || false).length;
+    const unread = msgs.filter(m => m.mail_read === '0').length;
     countEl.innerHTML = unread > 0 ? `<span class="count-badge">${unread}</span>` : '';
-
     inbox.innerHTML = msgs.map(m => `
-      <div class="message-item unread" onclick="openMessage('${escHtml(m.id)}')">
-        <div class="msg-from"><span class="unread-badge"></span>${escHtml(m.mailfrom || 'unknown')}</div>
-        <div class="msg-subject">${escHtml(m.subject || '(no subject)')}</div>
-        <div class="msg-time">${timeAgo(m.date)}</div>
-      </div>
-    `).join('');
+      <div class="message-item ${m.mail_read === '0' ? 'unread' : ''}" onclick="openMessage('${escHtml(m.mail_id)}')">
+        <div class="msg-from">${m.mail_read === '0' ? '<span class="unread-badge"></span>' : ''}${escHtml(m.mail_from || 'unknown')}</div>
+        <div class="msg-subject">${escHtml(m.mail_subject || '(no subject)')}</div>
+        <div class="msg-time">${timeAgo(m.mail_timestamp * 1000)}</div>
+      </div>`).join('');
   }
 
   async function openMessage(id) {
-    if (!mailbox) return;
+    if (!sidToken) return;
     try {
-      const data = await gql(`query { message(mailbox: "${mailbox}", id: "${id}") { id subject mailfrom date html text } }`);
-      const msg = data.data?.message;
-      if (!msg) return;
-
-      document.getElementById('modal-subject').textContent = msg.subject || '(no subject)';
+      const data = await apiGet({ f: 'fetch_email', email_id: id, sid_token: sidToken });
+      if (data.sid_token) sidToken = data.sid_token;
+      document.getElementById('modal-subject').textContent = data.mail_subject || '(no subject)';
       document.getElementById('modal-meta').innerHTML =
-        `From: ${escHtml(msg.mailfrom || '—')}<br>To: ${escHtml(currentEmail)}<br>${formatDate(msg.date)}`;
-
+        `From: ${escHtml(data.mail_from || '—')}<br>To: ${escHtml(currentEmail)}<br>${formatDate(data.mail_timestamp * 1000)}`;
       const body = document.getElementById('modal-body');
-
-      if (msg.html) {
+      if (data.mail_body && data.mail_body.trim()) {
         body.classList.remove('text-mode');
         body.innerHTML = '';
         const iframe = document.createElement('iframe');
         iframe.sandbox = 'allow-popups';
-        iframe.srcdoc = msg.html;
+        iframe.srcdoc = data.mail_body;
         body.appendChild(iframe);
       } else {
         body.classList.add('text-mode');
-        body.textContent = msg.text || '(empty)';
+        body.textContent = data.mail_text_only || '(empty)';
       }
-
       document.getElementById('modal').style.display = 'flex';
-    } catch {
-      showToast('Could not load message');
-    }
+    } catch { showToast('Could not load message'); }
+  }
+
+  async function extendSession() {
+    if (!sidToken) return;
+    try {
+      const data = await apiGet({ f: 'extend', sid_token: sidToken });
+      if (data.sid_token) sidToken = data.sid_token;
+      expiresAt = Date.now() + TTL;
+      saveSession();
+      showToast('Inbox extended · 60 min');
+    } catch {}
   }
 
   function closeModal(e) { if (e.target.id === 'modal') hideModal(); }
   function hideModal() {
     document.getElementById('modal').style.display = 'none';
     const body = document.getElementById('modal-body');
-    body.innerHTML = '';
-    body.classList.add('text-mode');
+    body.innerHTML = ''; body.classList.add('text-mode');
   }
 
   function copyEmail() {
@@ -691,20 +615,13 @@
     navigator.clipboard.writeText(currentEmail).then(() => showToast('Copied to clipboard'));
   }
 
-  function startPoll() {
-    pollMessages();
-    pollInterval = setInterval(pollMessages, 8000);
-  }
-
-  function clearPoll() {
-    if (pollInterval) clearInterval(pollInterval);
-    pollInterval = null;
-  }
+  function startPoll() { pollMessages(); pollInterval = setInterval(pollMessages, 8000); }
+  function clearPoll() { if (pollInterval) clearInterval(pollInterval); pollInterval = null; }
 
   function startTimer() {
     document.getElementById('timer-bar').style.display = 'flex';
     updateTimer();
-    timerInterval = setInterval(updateTimer, 60000);
+    timerInterval = setInterval(updateTimer, 1000);
   }
 
   function clearTimer() {
@@ -714,20 +631,16 @@
   }
 
   function updateTimer() {
-    const remaining = Math.max(0, createdAt + TTL - Date.now());
+    const remaining = Math.max(0, expiresAt - Date.now());
     const pct = (remaining / TTL) * 100;
-    const hrs = Math.floor(remaining / 3600000);
-    const mins = Math.floor((remaining % 3600000) / 60000);
-
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
     document.getElementById('timer-fill').style.width = pct + '%';
-    document.getElementById('timer-fill').style.background =
-      pct < 10 ? 'var(--accent)' : 'linear-gradient(90deg, var(--accent), var(--accent2))';
-    document.getElementById('timer-val').textContent = `${String(hrs).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m`;
-
+    document.getElementById('timer-fill').style.background = pct < 15 ? 'var(--accent)' : 'linear-gradient(90deg, var(--accent), var(--accent2))';
+    document.getElementById('timer-val').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    if (remaining <= EXTEND_AT && remaining > EXTEND_AT - 2000) extendSession();
     if (remaining === 0) {
-      clearPoll();
-      clearTimer();
-      localStorage.removeItem(SESSION_KEY);
+      clearPoll(); clearTimer(); localStorage.removeItem(SESSION_KEY);
       document.getElementById('status-dot').classList.remove('live');
       document.getElementById('status-text').textContent = 'Expired · Generate a new address';
       showToast('Inbox expired');
@@ -736,8 +649,7 @@
 
   function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
@@ -745,25 +657,23 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function timeAgo(iso) {
-    const diff = Date.now() - new Date(iso).getTime();
+  function timeAgo(ms) {
+    const diff = Date.now() - ms;
     if (diff < 60000) return 'just now';
     if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
-    if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
-    return Math.floor(diff/86400000) + 'd ago';
+    return Math.floor(diff/3600000) + 'h ago';
   }
 
-  function formatDate(iso) {
-    return new Date(iso).toLocaleString();
-  }
+  function formatDate(ms) { return new Date(ms).toLocaleString(); }
 
-  // Restore session on load
+  // Init
   (function init() {
-    const session = loadSession();
-    if (session) {
-      activateInbox(session.address, session.createdAt);
-      showToast('Inbox restored');
-    }
+    const gmailBase = localStorage.getItem(GMAIL_BASE_KEY);
+    if (gmailBase) document.getElementById('gmail-base').value = gmailBase;
+    renderAliases();
+
+    const s = loadSession();
+    if (s) { activateInbox(s.address, s.sidToken, s.expiresAt); showToast('Inbox restored'); }
   })();
 </script>
 </body>
