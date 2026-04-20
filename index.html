@@ -33,7 +33,6 @@
     overflow-x: hidden;
   }
 
-  /* Background grid */
   body::before {
     content: '';
     position: fixed;
@@ -53,7 +52,6 @@
     z-index: 1;
   }
 
-  /* Header */
   .header {
     text-align: center;
     margin-bottom: 48px;
@@ -80,7 +78,6 @@
     margin-top: 10px;
   }
 
-  /* Inbox card */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -114,9 +111,7 @@
     word-break: break-all;
   }
 
-  .email-address.active {
-    color: var(--green);
-  }
+  .email-address.active { color: var(--green); }
 
   .actions {
     display: flex;
@@ -161,7 +156,6 @@
     transform: none;
   }
 
-  /* Status bar */
   .status-bar {
     padding: 10px 24px;
     border-bottom: 1px solid var(--border);
@@ -191,7 +185,6 @@
     50% { opacity: 0.4; }
   }
 
-  /* Inbox */
   .inbox-body {
     padding: 0;
     min-height: 180px;
@@ -215,7 +208,6 @@
     opacity: 0.3;
   }
 
-  /* Message list */
   .message-item {
     padding: 16px 24px;
     border-bottom: 1px solid var(--border);
@@ -270,7 +262,6 @@
     vertical-align: middle;
   }
 
-  /* Message detail modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -336,9 +327,12 @@
   .modal-close:hover { border-color: var(--accent); color: var(--accent); }
 
   .modal-body {
-    padding: 24px;
     overflow-y: auto;
     flex: 1;
+  }
+
+  .modal-body.text-mode {
+    padding: 24px;
     font-size: 0.82rem;
     line-height: 1.8;
     color: #ccc;
@@ -346,7 +340,15 @@
     word-break: break-word;
   }
 
-  /* Timer */
+  .modal-body iframe {
+    display: block;
+    width: 100%;
+    height: 420px;
+    border: none;
+    background: #fff;
+  }
+
+  /* 24hr expiry bar */
   .timer-bar {
     padding: 14px 24px;
     border-top: 1px solid var(--border);
@@ -375,17 +377,16 @@
     height: 100%;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     border-radius: 2px;
-    transition: width 1s linear;
+    transition: width 60s linear;
   }
 
   .timer-value {
     font-size: 0.7rem;
     color: var(--accent);
-    min-width: 40px;
+    min-width: 56px;
     text-align: right;
   }
 
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 32px;
@@ -405,7 +406,6 @@
 
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* Loading spinner */
   .spinner {
     display: inline-block;
     width: 14px;
@@ -423,7 +423,6 @@
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  /* Footer */
   .footer {
     text-align: center;
     margin-top: 32px;
@@ -500,12 +499,12 @@
       <div class="timer-track">
         <div class="timer-fill" id="timer-fill" style="width:100%"></div>
       </div>
-      <span class="timer-value" id="timer-val">10:00</span>
+      <span class="timer-value" id="timer-val">24:00</span>
     </div>
   </div>
 
   <div class="footer">
-    Powered by mail.tm &nbsp;·&nbsp; Emails auto-expire &nbsp;·&nbsp; Use for signups &amp; verifications only
+    Powered by Maildrop &nbsp;·&nbsp; Inboxes last 24 hours &nbsp;·&nbsp; Use for signups &amp; verifications only
     <br><span class="badge">No PII Stored</span><span class="badge">Ephemeral</span>
   </div>
 </div>
@@ -520,26 +519,68 @@
       </div>
       <button class="modal-close" onclick="hideModal()">✕</button>
     </div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-body text-mode" id="modal-body"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const API = 'https://api.mail.tm';
-  let token = null;
-  let accountId = null;
+  const MAILDROP_API = 'https://api.maildrop.cc/graphql';
+  const TTL = 24 * 60 * 60 * 1000;
+  const SESSION_KEY = 'burnbox_session';
+
   let currentEmail = null;
+  let mailbox = null;
   let pollInterval = null;
   let timerInterval = null;
-  let messages = {};
-  let expiresAt = null;
-  const TTL = 10 * 60 * 1000; // 10 minutes
+  let seenIds = new Set();
+  let createdAt = null;
 
   function rand(n) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     return Array.from({length: n}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+
+  async function gql(query) {
+    const res = await fetch(MAILDROP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    return res.json();
+  }
+
+  function saveSession(address, ts) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ address, createdAt: ts }));
+  }
+
+  function loadSession() {
+    try {
+      const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+      if (s && s.address && Date.now() - s.createdAt < TTL) return s;
+    } catch {}
+    return null;
+  }
+
+  function activateInbox(address, ts) {
+    currentEmail = address;
+    mailbox = address.split('@')[0];
+    createdAt = ts;
+
+    const display = document.getElementById('email-display');
+    display.textContent = address;
+    display.classList.add('active');
+    document.getElementById('copy-btn').disabled = false;
+    document.getElementById('gen-btn').innerHTML = 'New Address';
+
+    document.getElementById('status-dot').classList.add('live');
+    document.getElementById('status-text').textContent = 'Inbox live · Checking every 8s';
+
+    renderInbox([]);
+    startPoll();
+    startTimer();
   }
 
   async function generateEmail() {
@@ -549,78 +590,34 @@
 
     clearPoll();
     clearTimer();
-    messages = {};
+    seenIds = new Set();
 
-    try {
-      // Get available domains
-      const domRes = await fetch(`${API}/domains?page=1`);
-      const domData = await domRes.json();
-      const domain = domData['hydra:member'][0].domain;
+    const user = rand(10);
+    const address = `${user}@maildrop.cc`;
+    const ts = Date.now();
 
-      const user = rand(10);
-      const pass = rand(16) + 'A1!';
-      const address = `${user}@${domain}`;
+    saveSession(address, ts);
+    activateInbox(address, ts);
 
-      // Create account
-      const accRes = await fetch(`${API}/accounts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, password: pass })
-      });
-
-      if (!accRes.ok) throw new Error('Account creation failed');
-      const acc = await accRes.json();
-      accountId = acc.id;
-
-      // Get token
-      const tokRes = await fetch(`${API}/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, password: pass })
-      });
-
-      if (!tokRes.ok) throw new Error('Auth failed');
-      const tok = await tokRes.json();
-      token = tok.token;
-      currentEmail = address;
-
-      // Update UI
-      const display = document.getElementById('email-display');
-      display.textContent = address;
-      display.classList.add('active');
-      document.getElementById('copy-btn').disabled = false;
-
-      document.getElementById('status-dot').classList.add('live');
-      document.getElementById('status-text').textContent = 'Inbox live · Checking every 8s';
-
-      renderInbox([]);
-      startPoll();
-      startTimer();
-
-    } catch (e) {
-      showToast('Error: ' + e.message);
-      document.getElementById('status-text').textContent = 'Failed — try again';
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = 'New Address';
-    }
+    btn.disabled = false;
   }
 
   async function pollMessages() {
-    if (!token) return;
+    if (!mailbox) return;
     try {
-      const res = await fetch(`${API}/messages?page=1`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      const msgs = data['hydra:member'] || [];
+      const data = await gql(`query { inbox(mailbox: "${mailbox}") { id subject mailfrom date } }`);
+      const msgs = data.data?.inbox || [];
 
       let newCount = 0;
-      msgs.forEach(m => { if (!messages[m.id]) newCount++; messages[m.id] = m; });
+      msgs.forEach(m => { if (!seenIds.has(m.id)) newCount++; });
 
       renderInbox(msgs);
-      if (newCount > 0) showToast(`${newCount} new message${newCount > 1 ? 's' : ''}`);
+      if (newCount > 0) {
+        showToast(`${newCount} new message${newCount > 1 ? 's' : ''}`);
+        msgs.forEach(m => seenIds.add(m.id));
+      } else {
+        msgs.forEach(m => seenIds.add(m.id));
+      }
     } catch {}
   }
 
@@ -638,50 +635,56 @@
       return;
     }
 
-    const unread = msgs.filter(m => !m.seen).length;
+    const unread = msgs.filter(m => !seenIds.has(m.id) || false).length;
     countEl.innerHTML = unread > 0 ? `<span class="count-badge">${unread}</span>` : '';
 
     inbox.innerHTML = msgs.map(m => `
-      <div class="message-item ${!m.seen ? 'unread' : ''}" onclick="openMessage('${m.id}')">
-        <div class="msg-from">${!m.seen ? '<span class="unread-badge"></span>' : ''}${escHtml(m.from?.address || 'unknown')}</div>
+      <div class="message-item unread" onclick="openMessage('${escHtml(m.id)}')">
+        <div class="msg-from"><span class="unread-badge"></span>${escHtml(m.mailfrom || 'unknown')}</div>
         <div class="msg-subject">${escHtml(m.subject || '(no subject)')}</div>
-        <div class="msg-time">${timeAgo(m.createdAt)}</div>
+        <div class="msg-time">${timeAgo(m.date)}</div>
       </div>
     `).join('');
   }
 
   async function openMessage(id) {
-    if (!token) return;
+    if (!mailbox) return;
     try {
-      const res = await fetch(`${API}/messages/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) return;
-      const msg = await res.json();
+      const data = await gql(`query { message(mailbox: "${mailbox}", id: "${id}") { id subject mailfrom date html text } }`);
+      const msg = data.data?.message;
+      if (!msg) return;
 
       document.getElementById('modal-subject').textContent = msg.subject || '(no subject)';
       document.getElementById('modal-meta').innerHTML =
-        `From: ${escHtml(msg.from?.address || '—')}<br>To: ${escHtml(currentEmail)}<br>${formatDate(msg.createdAt)}`;
+        `From: ${escHtml(msg.mailfrom || '—')}<br>To: ${escHtml(currentEmail)}<br>${formatDate(msg.date)}`;
 
-      // Prefer text, fallback to stripping HTML
-      const body = msg.text || stripHtml(msg.html?.join('') || '') || '(empty)';
-      document.getElementById('modal-body').textContent = body;
+      const body = document.getElementById('modal-body');
+
+      if (msg.html) {
+        body.classList.remove('text-mode');
+        body.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.sandbox = 'allow-popups';
+        iframe.srcdoc = msg.html;
+        body.appendChild(iframe);
+      } else {
+        body.classList.add('text-mode');
+        body.textContent = msg.text || '(empty)';
+      }
 
       document.getElementById('modal').style.display = 'flex';
-
-      // Mark as seen locally
-      if (messages[id]) { messages[id].seen = true; }
-      const items = document.querySelectorAll('.message-item');
-      items.forEach(el => {
-        if (el.onclick?.toString().includes(id)) el.classList.remove('unread');
-      });
-    } catch (e) {
+    } catch {
       showToast('Could not load message');
     }
   }
 
   function closeModal(e) { if (e.target.id === 'modal') hideModal(); }
-  function hideModal() { document.getElementById('modal').style.display = 'none'; }
+  function hideModal() {
+    document.getElementById('modal').style.display = 'none';
+    const body = document.getElementById('modal-body');
+    body.innerHTML = '';
+    body.classList.add('text-mode');
+  }
 
   function copyEmail() {
     if (!currentEmail) return;
@@ -689,8 +692,8 @@
   }
 
   function startPoll() {
-    pollInterval = setInterval(pollMessages, 8000);
     pollMessages();
+    pollInterval = setInterval(pollMessages, 8000);
   }
 
   function clearPoll() {
@@ -699,10 +702,9 @@
   }
 
   function startTimer() {
-    expiresAt = Date.now() + TTL;
     document.getElementById('timer-bar').style.display = 'flex';
     updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
+    timerInterval = setInterval(updateTimer, 60000);
   }
 
   function clearTimer() {
@@ -712,19 +714,20 @@
   }
 
   function updateTimer() {
-    const remaining = Math.max(0, expiresAt - Date.now());
+    const remaining = Math.max(0, createdAt + TTL - Date.now());
     const pct = (remaining / TTL) * 100;
-    const mins = Math.floor(remaining / 60000);
-    const secs = Math.floor((remaining % 60000) / 1000);
+    const hrs = Math.floor(remaining / 3600000);
+    const mins = Math.floor((remaining % 3600000) / 60000);
+
     document.getElementById('timer-fill').style.width = pct + '%';
     document.getElementById('timer-fill').style.background =
-      pct < 20 ? 'var(--accent)' : 'linear-gradient(90deg, var(--accent), var(--accent2))';
-    document.getElementById('timer-val').textContent =
-      `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+      pct < 10 ? 'var(--accent)' : 'linear-gradient(90deg, var(--accent), var(--accent2))';
+    document.getElementById('timer-val').textContent = `${String(hrs).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m`;
 
     if (remaining === 0) {
       clearPoll();
       clearTimer();
+      localStorage.removeItem(SESSION_KEY);
       document.getElementById('status-dot').classList.remove('live');
       document.getElementById('status-text').textContent = 'Expired · Generate a new address';
       showToast('Inbox expired');
@@ -739,23 +742,29 @@
   }
 
   function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function stripHtml(html) {
-    return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   function timeAgo(iso) {
     const diff = Date.now() - new Date(iso).getTime();
     if (diff < 60000) return 'just now';
     if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
-    return Math.floor(diff/3600000) + 'h ago';
+    if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
+    return Math.floor(diff/86400000) + 'd ago';
   }
 
   function formatDate(iso) {
     return new Date(iso).toLocaleString();
   }
+
+  // Restore session on load
+  (function init() {
+    const session = loadSession();
+    if (session) {
+      activateInbox(session.address, session.createdAt);
+      showToast('Inbox restored');
+    }
+  })();
 </script>
 </body>
 </html>
